@@ -11,9 +11,13 @@ namespace Microservices.Shared
     {
         [Key]
         public Guid Id { get; set; }
-        
+
         [Required]
         [StringLength(50)]
+        public string Title { get; set; }
+
+        [Required]
+        [StringLength(256)]
         public string Description { get; set; }
         
         [Required]
@@ -34,5 +38,7 @@ namespace Microservices.Shared
         public int Quantity { get; set; }
 
         public BuyType BuyType { get; set; } = BuyType.OnlyMeUsage;
+
+        public bool IsActive { get; set; } = true;
     }
 }

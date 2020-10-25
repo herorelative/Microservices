@@ -13,6 +13,7 @@ namespace Microservices.DataAccess
             : base(options){}
 
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<EVoucher> EVouchers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +23,11 @@ namespace Microservices.DataAccess
                 {
                     Id = Guid.NewGuid(),
                     Description = "VISA",
+                },
+                new PaymentMethod
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "Mastercard"
                 },
                 new PaymentMethod
                 {
@@ -40,10 +46,20 @@ namespace Microservices.DataAccess
                 },
                 new PaymentMethod
                 {
-                    Id=Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Description = "WavePay"
                 }
            );
+
+            //builder.Entity<EVoucher>().HasData(
+            //     new EVoucher
+            //     {
+            //         Title = "Shwe Zagar",
+            //         Description = "MPT offers Lowest Call Rate Plan that includes MPT on-net calls: 10Ks/Min Off - net calls: 27Ks / Min SMS: 15 Ks Data: 8 Ks / MB",
+            //         ExpireDate = DateTime.UtcNow.AddYears(2),
+                     
+            //     }
+            //);
         }
     }
 }
