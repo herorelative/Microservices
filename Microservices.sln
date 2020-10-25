@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.DataAccess", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.eStoreAPI", "Microservices.eStoreAPI\Microservices.eStoreAPI.csproj", "{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{A23E4771-DD21-4BDC-92D7-20BC2C95E070}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.eStore.Client", "Microservices.eStore.Client\Microservices.eStore.Client.csproj", "{DBE6B812-3352-4627-A5FF-5DCA985ED560}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +29,10 @@ Global
 		{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBE6B812-3352-4627-A5FF-5DCA985ED560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBE6B812-3352-4627-A5FF-5DCA985ED560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBE6B812-3352-4627-A5FF-5DCA985ED560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBE6B812-3352-4627-A5FF-5DCA985ED560}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

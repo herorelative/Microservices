@@ -28,6 +28,7 @@ namespace Microservices.eStoreAPI.Controllers
             _appSettings = appSettings;
             _signInManager = signInManager;
         }
+        
         // POST: api/login
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM model)
