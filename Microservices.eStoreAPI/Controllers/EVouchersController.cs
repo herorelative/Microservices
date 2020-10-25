@@ -7,6 +7,7 @@ using Microservices.DataAccess.Repository.IRepository;
 using Microservices.Shared;
 using Microservices.Shared.DTOs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.eStoreAPI.Controllers
@@ -57,7 +58,7 @@ namespace Microservices.eStoreAPI.Controllers
         }
 
         //PUT: api/evouchers/{id}
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<ActionResult> UpdateCommand(Guid id,eVoucherUpdateVM model)
         {
             var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
@@ -66,10 +67,38 @@ namespace Microservices.eStoreAPI.Controllers
                 return NotFound();
 
             _mapper.Map(model, evoucherModelFromRepo);
-            //the following will not do anything, but it is here to support other db provider
+
+            //the following will not do anything, but it is here to support other ORM
+            //and reduce maintenance work
             _eVoucherRepo.UpdateEVoucher(evoucherModelFromRepo);
             await _eVoucherRepo.SaveChanges();
             return NoContent();
         }
+
+        //PATCH: api/evouchers/{id}
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> PartialeVoucherUpdate(Guid id,JsonPatchDocument<eVoucherUpdateVM> patcheVoucher)
+        {
+            var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
+            if (evoucherModelFromRepo == null)
+                return NotFound();
+
+            var evoucherToPatch = _mapper.Map<eVoucherUpdateVM>(evoucherModelFromRepo);
+            patcheVoucher.ApplyTo(evoucherToPatch, ModelState);
+
+            if (!TryValidateModel(evoucherToPatch))
+                return ValidationProblem(ModelState);
+
+            _mapper.Map(evoucherToPatch, evoucherModelFromRepo);
+
+            //the following will not do anything, but it is here to support other ORM
+            //and reduce maintenance work
+            _eVoucherRepo.UpdateEVoucher(evoucherModelFromRepo);
+
+            await _eVoucherRepo.SaveChanges();
+
+            return NoContent();
+        }
+
     }
 }
