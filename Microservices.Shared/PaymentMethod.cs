@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Microservices.Shared
 {
-    [Table("paymentMethod")]
+    [Table("paymentmethod")]
     public class PaymentMethod
     {
         [Key]

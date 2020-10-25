@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Microservices.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microservices.DataAccess
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<eVoucherUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options){}
@@ -51,15 +52,39 @@ namespace Microservices.DataAccess
                 }
            );
 
+            //coc for MySql DB Provider
+            builder.Entity<eVoucherUser>(entity => {
+                entity.ToTable(name: "aspnetusers");
+            });
+            builder.Entity<IdentityRole>(entity => {
+                entity.ToTable(name: "aspnetroles");
+            });
+            builder.Entity<IdentityUserRole<string>>(entity => {
+                entity.ToTable("aspnetuserroles");
+            });
+            builder.Entity<IdentityUserClaim<string>>(entity => {
+                entity.ToTable("aspnetuserclaims");
+            });
+            builder.Entity<IdentityUserLogin<string>>(entity => {
+                entity.ToTable("aspnetuserlogins");
+            });
+            builder.Entity<IdentityUserToken<string>>(entity => {
+                entity.ToTable("aspnetusertokens");
+            });
+            builder.Entity<IdentityRoleClaim<string>>(entity => {
+                entity.ToTable("aspnetroleclaims");
+            });
+
             //builder.Entity<EVoucher>().HasData(
             //     new EVoucher
             //     {
             //         Title = "Shwe Zagar",
             //         Description = "MPT offers Lowest Call Rate Plan that includes MPT on-net calls: 10Ks/Min Off - net calls: 27Ks / Min SMS: 15 Ks Data: 8 Ks / MB",
             //         ExpireDate = DateTime.UtcNow.AddYears(2),
-                     
+
             //     }
             //);
+
         }
     }
 }
