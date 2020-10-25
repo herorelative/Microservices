@@ -55,5 +55,21 @@ namespace Microservices.eStoreAPI.Controllers
 
             return CreatedAtRoute(nameof(GeteVoucherById), new { Id = evoucherVM.Id }, evoucherVM);
         }
+
+        //PUT: api/evouchers/{id}
+        [HttpPut("id")]
+        public async Task<ActionResult> UpdateCommand(Guid id,eVoucherUpdateVM model)
+        {
+            var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
+            
+            if (evoucherModelFromRepo == null)
+                return NotFound();
+
+            _mapper.Map(model, evoucherModelFromRepo);
+            //the following will not do anything, but it is here to support other db provider
+            _eVoucherRepo.UpdateEVoucher(evoucherModelFromRepo);
+            await _eVoucherRepo.SaveChanges();
+            return NoContent();
+        }
     }
 }

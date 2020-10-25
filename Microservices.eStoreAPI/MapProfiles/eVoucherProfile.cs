@@ -13,6 +13,8 @@ namespace Microservices.eStoreAPI.MapProfiles
         public eVoucherProfile()
         {
             CreateMap<EVoucher, eVoucherVM>();
+            CreateMap<eVoucherCreateVM, EVoucher>();
+            CreateMap<EVoucher, eVoucherUpdateVM>().ReverseMap();
         }
     }
 }
