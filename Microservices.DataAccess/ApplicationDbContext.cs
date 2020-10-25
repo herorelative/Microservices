@@ -52,7 +52,7 @@ namespace Microservices.DataAccess
                 }
            );
 
-            //coc for MySql DB Provider
+            //coc for Other ORM Provider
             builder.Entity<eVoucherUser>(entity => {
                 entity.ToTable(name: "aspnetusers");
             });
