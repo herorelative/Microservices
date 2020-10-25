@@ -32,6 +32,15 @@ namespace Microservices.eStoreAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<eVoucherVM>>(eVouchers));
         }
 
-        
+        // GET: api/evouchers/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<eVoucherVM>> GeteVoucherById(Guid Id)
+        {
+            var eVoucher = await _eVoucherRepo.GeteVoucherById(Id);
+            if (eVoucher == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<eVoucherVM>(eVoucher));
+        }
     }
 }
