@@ -100,5 +100,19 @@ namespace Microservices.eStoreAPI.Controllers
             return NoContent();
         }
 
+        //DELETE: api/evouchers/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteEVoucher(Guid id)
+        {
+            var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
+
+            if (evoucherModelFromRepo == null)
+                return NotFound();
+
+            _eVoucherRepo.DeleteEVoucher(evoucherModelFromRepo);
+            await _eVoucherRepo.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
