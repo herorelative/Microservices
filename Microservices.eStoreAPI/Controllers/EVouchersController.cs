@@ -42,5 +42,18 @@ namespace Microservices.eStoreAPI.Controllers
 
             return Ok(_mapper.Map<eVoucherVM>(eVoucher));
         }
+
+        //POST: api/evouchers/
+        [HttpPost]
+        public async Task<ActionResult<eVoucherVM>> CreateeVoucher(eVoucherCreateVM model)
+        {
+            var eVoucherModel = _mapper.Map<EVoucher>(model);
+            await _eVoucherRepo.CreateEVoucher(eVoucherModel);
+            await _eVoucherRepo.SaveChanges();
+
+            var evoucherVM = _mapper.Map<eVoucherVM>(eVoucherModel);
+
+            return CreatedAtRoute(nameof(GeteVoucherById), new { Id = evoucherVM.Id }, evoucherVM);
+        }
     }
 }
