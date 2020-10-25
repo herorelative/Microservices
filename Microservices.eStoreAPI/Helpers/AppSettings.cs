@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoreJWTExample.Helpers
+namespace Microservices.eStoreAPI.Helpers
 {
     public class AppSettings
     {

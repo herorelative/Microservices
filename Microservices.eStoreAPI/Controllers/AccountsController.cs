@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microservices.DataAccess;
 using Microservices.Shared;
 using Microservices.Shared.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -39,9 +40,11 @@ namespace Microservices.eStoreAPI.Controllers
 
             if (!result.Succeeded)
             {
-                //get errors and return
+                var errors = result.Errors.Select(x => x.Description);
+
+                return Ok(new RegisterResult { Success = false, Errors = errors });
             }
-            return Ok(new { Success = true });
+            return Ok(new RegisterResult { Success = true });
         }
     }
 }

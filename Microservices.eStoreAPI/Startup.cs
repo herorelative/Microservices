@@ -20,7 +20,7 @@ using Microservices.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CoreJWTExample.Helpers;
+using Microservices.eStoreAPI.Helpers;
 
 namespace Microservices.eStoreAPI
 {
@@ -63,19 +63,25 @@ namespace Microservices.eStoreAPI
                     };
                 });
 
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(s =>
-                {
-                    s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //AddTransient: a service is created each time it is requested from the service container
+            //AddTransient: 
+            //a service is created each time it is requested from the service container
             //AddScoped: a service is created once per client request(connectoin).
             //AddSingleton: a service is created once and reused.
             services.AddScoped<IPaymentMethodRepo, PaymentMethodRepo>();
             services.AddScoped<IEVoucherRepo, EVoucherRepo>();
+
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(s =>
+                {
+                    s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +105,8 @@ namespace Microservices.eStoreAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors("Open");
 
             app.UseEndpoints(endpoints =>
             {

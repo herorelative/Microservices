@@ -6,12 +6,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.Configuration;
-using CoreJWTExample.Helpers;
+using Microservices.DataAccess;
+using Microservices.eStoreAPI.Helpers;
 using Microservices.Shared;
+using Microservices.Shared.Communication;
 using Microservices.Shared.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Microservices.eStoreAPI.Controllers
@@ -23,9 +26,9 @@ namespace Microservices.eStoreAPI.Controllers
         private readonly AppSettings _appSettings;
         private readonly SignInManager<eVoucherUser> _signInManager;
 
-        public LoginController(AppSettings appSettings, SignInManager<eVoucherUser> signInManager)
+        public LoginController(IOptions<AppSettings> appSettings, SignInManager<eVoucherUser> signInManager)
         {
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
             _signInManager = signInManager;
         }
         
@@ -55,9 +58,10 @@ namespace Microservices.eStoreAPI.Controllers
                 expires: expire,
                 signingCredentials: credentials);
 
-            return Ok(new { 
-                Successful = true, 
-                Token = new JwtSecurityTokenHandler().WriteToken(token) 
+            return Ok(new LoginResult
+            {
+                Success = true,
+                Token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
     }

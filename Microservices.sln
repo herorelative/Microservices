@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.Shared", "Mic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.DataAccess", "Microservices.DataAccess\Microservices.DataAccess.csproj", "{E1DE8DE9-E960-4DAC-951C-2FBA06BD6A9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.eStoreAPI", "Microservices.eStoreAPI\Microservices.eStoreAPI.csproj", "{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.eStoreAPI", "Microservices.eStoreAPI\Microservices.eStoreAPI.csproj", "{CEE9A674-9EA7-494B-A923-5E0D9350D4DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.eStore.Client", "Microservices.eStore.Client\Microservices.eStore.Client.csproj", "{DBE6B812-3352-4627-A5FF-5DCA985ED560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microservices.eStore.Client", "Microservices.eStore.Client\Microservices.eStore.Client.csproj", "{DBE6B812-3352-4627-A5FF-5DCA985ED560}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

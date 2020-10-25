@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Microservices.Shared
+namespace Microservices.DataAccess
 {
     public class eVoucherUser : IdentityUser
     {
