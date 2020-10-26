@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.eStoreAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EVouchersController : ControllerBase
@@ -34,7 +34,7 @@ namespace Microservices.eStoreAPI.Controllers
             var eVouchers = await _eVoucherRepo.GetAlleVouchers();
             return Ok(_mapper.Map<IEnumerable<eVoucherVM>>(eVouchers));
         }
-
+        //[Authorize]
         // GET: api/evouchers/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<eVoucherVM>> GeteVoucherById(Guid Id)

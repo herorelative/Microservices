@@ -77,7 +77,7 @@ namespace Microservices.eStoreAPI
             services.AddScoped<IPaymentMethodRepo, PaymentMethodRepo>();
             services.AddScoped<IEVoucherRepo, EVoucherRepo>();
 
-            services.AddControllersWithViews()
+            services.AddControllers()
                 .AddNewtonsoftJson(s =>
                 {
                     s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
