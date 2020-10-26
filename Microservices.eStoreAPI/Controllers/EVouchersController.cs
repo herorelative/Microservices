@@ -34,7 +34,7 @@ namespace Microservices.eStoreAPI.Controllers
             var eVouchers = await _eVoucherRepo.GetAlleVouchers();
             return Ok(_mapper.Map<IEnumerable<eVoucherVM>>(eVouchers));
         }
-        //[Authorize]
+        [Authorize]
         // GET: api/evouchers/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<eVoucherVM>> GeteVoucherById(Guid Id)
