@@ -31,7 +31,7 @@ namespace Microservices.eStore.Client.Services
         public async Task<RegisterResult> Register(UserRegisterVM registerModel)
         {
             var registerJson = new StringContent(JsonSerializer.Serialize(registerModel), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsJsonAsync("api/accounts", registerJson);
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:44365/api/accounts", registerJson);
             
             return await JsonSerializer.DeserializeAsync<RegisterResult>(await response.Content.ReadAsStreamAsync()); ;
         }
@@ -39,7 +39,7 @@ namespace Microservices.eStore.Client.Services
         public async Task<LoginResult> Login(LoginVM loginModel)
         {
             var loginJson = new StringContent(JsonSerializer.Serialize(loginModel), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("api/Login", loginJson);
+            var response = await _httpClient.PostAsync("https://localhost:44365/api/Login", loginJson);
             var loginResult = JsonSerializer.Deserialize<LoginResult>(
                 await response.Content.ReadAsStringAsync(), 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -55,7 +55,7 @@ namespace Microservices.eStore.Client.Services
             _httpClient.DefaultRequestHeaders.Authorization = 
                 new AuthenticationHeaderValue("bearer", loginResult.Token);
 
-            return loginResult;
+            return new LoginResult { Success = true };
         }
 
         public async Task Logout()

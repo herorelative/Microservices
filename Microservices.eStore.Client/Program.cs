@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Blazored.LocalStorage;
 using Microservices.eStore.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http.Headers;
 
 namespace Microservices.eStore.Client
 {
@@ -20,23 +21,18 @@ namespace Microservices.eStore.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
+
+            builder.Services.AddScoped(sp => new HttpClient { 
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+            });
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            builder.Services.AddScoped<IEVoucherService, EVoucherService>();
+
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
-
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProviderService>();
-            var baseAPIurl = "https://localhost:44365";
-
-            builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
-                client.BaseAddress = new Uri(baseAPIurl)
-            );
-            builder.Services.AddHttpClient<IPaymentMethodService, PaymentMethodService>(client =>
-                client.BaseAddress = new Uri(baseAPIurl)
-            );
-            builder.Services.AddHttpClient<IEVoucherService, EVoucherService>(client =>
-                client.BaseAddress = new Uri(baseAPIurl)
-            );
 
             await builder.Build().RunAsync();
         }

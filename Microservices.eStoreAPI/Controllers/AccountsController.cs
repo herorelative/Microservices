@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microservices.DataAccess;
 using Microservices.Shared;
 using Microservices.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,13 @@ namespace Microservices.eStoreAPI.Controllers
         public AccountsController(UserManager<eVoucherUser> userManager)
         {
             _userManager = userManager;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public string Get()
+        {
+            return "You did it!";
         }
 
         // POST: api/accounts

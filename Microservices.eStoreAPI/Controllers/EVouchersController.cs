@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.eStoreAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EVouchersController : ControllerBase
@@ -34,9 +34,9 @@ namespace Microservices.eStoreAPI.Controllers
             var eVouchers = await _eVoucherRepo.GetAlleVouchers();
             return Ok(_mapper.Map<IEnumerable<eVoucherVM>>(eVouchers));
         }
-        [Authorize]
         // GET: api/evouchers/{id}
         [HttpGet("{id}")]
+        //[Authorize]
         public async Task<ActionResult<eVoucherVM>> GeteVoucherById(Guid Id)
         {
             var eVoucher = await _eVoucherRepo.GeteVoucherById(Id);
@@ -48,7 +48,7 @@ namespace Microservices.eStoreAPI.Controllers
 
         //POST: api/evouchers/
         [HttpPost]
-        public async Task<ActionResult<eVoucherVM>> CreateeVoucher(eVoucherCreateVM model)
+        public async Task<ActionResult<eVoucherVM>> CreateEvoucher(eVoucherCreateVM model)
         {
             var eVoucherModel = _mapper.Map<EVoucher>(model);
             await _eVoucherRepo.CreateEVoucher(eVoucherModel);
@@ -61,7 +61,7 @@ namespace Microservices.eStoreAPI.Controllers
 
         //PUT: api/evouchers/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCommand(Guid id,eVoucherUpdateVM model)
+        public async Task<ActionResult> UpdateEvoucher(Guid id,eVoucherUpdateVM model)
         {
             var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
             

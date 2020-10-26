@@ -1,18 +1,17 @@
-﻿@page "/NewOrUpdateVoucher"
-@page "/NewOrUpdateVoucher/{Id:guid}"
+﻿@page "/EditVoucher/{id:guid}"
 @attribute [Authorize]
 @inject IPaymentMethodService PaymentMethodServ
 @inject IEVoucherService EvoucherServ
+@inject NavigationManager NaviManager
 
-<h1>Details for @((Id == Guid.Empty || Id == null) ? "New eVoucher" : voucher.Title)</h1>
+<h1>Details for New eVoucher</h1>
 
-<p>@((Id == Guid.Empty || Id == null) ? "Please fill up the following" : "Please change some of the following")</p>
+<p>Please fill up the following</p>
 <div class="card">
     <div class="card-body">
         <EditForm Model="voucher" OnValidSubmit="HandleSave">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <input type="hidden" value="@Id" />
             <div class="form-group">
                 <label for="title">Title</label>
                 <InputText Id="title" class="form-control" @bind-Value="voucher.Title" />
@@ -66,46 +65,50 @@
                     <option value="@(Microservices.Shared.BuyType.GiftToOthers)">Gift To Others</option>
                 </InputSelect>
             </div>
-            <button type="submit" class="btn btn-primary">@((Id == Guid.Empty || Id == null) ? "Save" : "Save Changes")</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
         </EditForm>
     </div>
 </div>
 @code {
     [Parameter]
-    public Guid Id { get; set; }
-
+    public Guid id { get; set; }
     public string PaymentMethodId { get; set; }
 
-    private eVoucherCreateVM voucher = new eVoucherCreateVM();
+    private eVoucherUpdateVM voucher = new eVoucherUpdateVM();
     public IEnumerable<PaymentMethodVM> Payments { get; set; } = new List<PaymentMethodVM>();
 
     protected override async Task OnInitializedAsync()
     {
-        Payments=(await PaymentMethodServ.GetAllPaymentMethods()).ToList();
+        Payments = (await PaymentMethodServ.GetAllPaymentMethods()).ToList();
 
-        if(Id == Guid.Empty || Id==null)
+        var modelFromRepo = await EvoucherServ.GetAnEvoucher(id);
+        if(modelFromRepo == null)
         {
-            voucher.ExpireDate = DateTime.UtcNow.AddYears(1);
-            PaymentMethodId = Payments.FirstOrDefault().Id.ToString();
+            //show error message
         }
-        else
-        {
-            var voucherRepo = await EvoucherServ.GetAnEvoucher(Id);
 
-            voucher.Title = voucherRepo.Title;
-            voucher.Description = voucherRepo.Description;
-            voucher.Amount = voucherRepo.Amount;
-            voucher.BuyType = voucherRepo.BuyType;
-            voucher.ExpireDate = voucherRepo.ExpireDate;
-            voucher.Quantity = voucherRepo.Quantity;
-            //voucher.PaymentMethodId = voucherRepo.PaymentMethodId;
-            PaymentMethodId = voucherRepo.PaymentMethodId.ToString();
-            voucher.DiscountOnPaymentMethod = voucherRepo.DiscountOnPaymentMethod;
-        }
+        voucher.Title = modelFromRepo.Title;
+        voucher.Description = modelFromRepo.Description;
+        voucher.ExpireDate = modelFromRepo.ExpireDate;
+        voucher.Quantity = modelFromRepo.Quantity;
+        voucher.Amount = modelFromRepo.Amount;
+        PaymentMethodId = modelFromRepo.PaymentMethodId.ToString();
+        voucher.DiscountOnPaymentMethod = modelFromRepo.DiscountOnPaymentMethod;
+        voucher.BuyType = modelFromRepo.BuyType;
     }
 
-    protected void HandleSave()
+    protected async Task HandleSave()
     {
-
+        voucher.PaymentMethodId = Guid.Parse(PaymentMethodId);
+        await EvoucherServ.UpdateAnEvoucher(id,voucher);
+        NaviManager.NavigateTo("/evouchers");
+        //if (addedVoucher != null)
+        //{
+        //    //created
+        //}
+        //else
+        //{
+        //    //something went wrong
+        //}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Microservices.eStore.Client.Features;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace Microservices.eStore.Client.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
+        private readonly AuthenticationState _anonymous;
 
         public ApiAuthenticationStateProviderService(HttpClient httpClient, ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
             _localStorageService = localStorageService;
+            _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -27,12 +30,12 @@ namespace Microservices.eStore.Client.Services
             var savedToken = await _localStorageService.GetItemAsync<string>("authToken");
 
             if (string.IsNullOrWhiteSpace(savedToken))
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                return _anonymous;
 
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("bearer", savedToken);
 
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(savedToken), "jwt")));
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtPaser.ParseClaimsFromJwt(savedToken), "jwtAuthType")));
         }
 
         public void MarkAsAuthenticated(string email)
@@ -41,7 +44,7 @@ namespace Microservices.eStore.Client.Services
                 new ClaimsIdentity(
                     new Claim[] { 
                         new Claim(ClaimTypes.Name, email) 
-                    }, "apiauth"));
+                    }, "jwtAuthType"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }
@@ -49,52 +52,8 @@ namespace Microservices.eStore.Client.Services
         public void MarkAsLoggedOut()
         {
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
-            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
+            var authState = Task.FromResult(_anonymous);
             NotifyAuthenticationStateChanged(authState);
-        }
-
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var claims = new List<Claim>();
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-
-            keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
-
-            if (roles != null)
-            {
-                if (roles.ToString().Trim().StartsWith("["))
-                {
-                    var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
-
-                    foreach (var parsedRole in parsedRoles)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, parsedRole));
-                    }
-                }
-                else
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
-                }
-
-                keyValuePairs.Remove(ClaimTypes.Role);
-            }
-
-            claims.AddRange(keyValuePairs
-                .Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
-
-            return claims;
-        }
-
-        private byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
         }
     }
 }

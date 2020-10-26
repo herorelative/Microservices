@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microservices.eStoreAPI.Helpers;
+using Microsoft.Net.Http.Headers;
 
 namespace Microservices.eStoreAPI
 {
@@ -48,7 +49,21 @@ namespace Microservices.eStoreAPI
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Open", builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+            });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -59,16 +74,10 @@ namespace Microservices.eStoreAPI
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = appSettings.JwtIssuer,
                         ValidAudience = appSettings.JwtAudience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JwtSecurityKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(appSettings.JwtSecurityKey))
                     };
                 });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            });
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             //AddTransient: 
             //a service is created each time it is requested from the service container
@@ -81,7 +90,7 @@ namespace Microservices.eStoreAPI
                 .AddNewtonsoftJson(s =>
                 {
                     s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                });            
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,23 +99,17 @@ namespace Microservices.eStoreAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            
             app.UseHttpsRedirection();
-            //app.UseStaticFiles();
+            app.UseCors("Open");
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseCors("Open");
 
             app.UseEndpoints(endpoints =>
             {

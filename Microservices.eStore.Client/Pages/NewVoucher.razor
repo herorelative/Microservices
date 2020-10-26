@@ -1,0 +1,102 @@
+﻿@page "/NewEVoucher"
+@attribute [Authorize]
+@inject IPaymentMethodService PaymentMethodServ
+@inject IEVoucherService EvoucherServ
+@inject NavigationManager NaviManager
+
+<h1>Details for New eVoucher</h1>
+
+<p>Please fill up the following</p>
+<div class="card">
+    <div class="card-body">
+        <EditForm Model="voucher" OnValidSubmit="HandleSave">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="title">Title</label>
+                <InputText Id="title" class="form-control" @bind-Value="voucher.Title" />
+                <ValidationMessage For="@(() => voucher.Title)" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <InputTextArea Id="description" class="form-control" @bind-Value="voucher.Description" />
+                <ValidationMessage For="@(() => voucher.Description)" />
+            </div>
+
+            <div class="form-group">
+                <label for="expiredate">Expire on</label>
+                <InputDate id="expiredate" class="form-control" @bind-Value="voucher.ExpireDate"></InputDate>
+                <ValidationMessage For="@(() => voucher.ExpireDate)" />
+            </div>
+
+            <div class="form-group">
+                <label for="qty">Quantity</label>
+                <InputNumber id="qty" class="form-control" @bind-Value="voucher.Quantity"></InputNumber>
+                <ValidationMessage For="@(() => voucher.Quantity)" />
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <InputNumber id="amount" class="form-control" @bind-Value="voucher.Amount"></InputNumber>
+                <ValidationMessage For="@(() => voucher.Amount)" />
+            </div>
+
+            <div class="form-group">
+                <label for="paymentmethod">Payment Method</label>
+                <InputSelect id="paymentmethod" class="form-control" @bind-Value="@PaymentMethodId">
+                    @foreach (var item in Payments)
+                    {
+                        <option value="@item.Id.ToString()">@item.Description</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                <label for="discount">Discount on Payment Method</label>
+                <InputNumber id="discount" class="form-control" @bind-Value="voucher.DiscountOnPaymentMethod"></InputNumber>
+                <ValidationMessage For="@(() => voucher.DiscountOnPaymentMethod)" />
+            </div>
+
+            <div class="form-group">
+                <label for="buytype">Buy Type</label>
+                <InputSelect id="buytype" class="form-control" @bind-Value="voucher.BuyType">
+                    <option value="@(Microservices.Shared.BuyType.OnlyMeUsage)">Only Me Usage</option>
+                    <option value="@(Microservices.Shared.BuyType.GiftToOthers)">Gift To Others</option>
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </EditForm>
+    </div>
+</div>
+@code {
+    public string PaymentMethodId { get; set; }
+
+    private eVoucherCreateVM voucher = new eVoucherCreateVM();
+    public IEnumerable<PaymentMethodVM> Payments { get; set; } = new List<PaymentMethodVM>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Payments=(await PaymentMethodServ.GetAllPaymentMethods()).ToList();
+
+        voucher.ExpireDate = DateTime.UtcNow.AddYears(1);
+        voucher.Quantity = 1;
+        voucher.Amount = 1;
+        PaymentMethodId = Payments.FirstOrDefault().Id.ToString();
+    }
+
+    protected async Task HandleSave()
+    {
+        voucher.PaymentMethodId = Guid.Parse(PaymentMethodId);
+        var addedVoucher = await EvoucherServ.AddEvoucher(voucher);
+        if (addedVoucher != null)
+        {
+            //created
+            NaviManager.NavigateTo("/evouchers");
+        }
+        else
+        {
+            //something went wrong
+        }
+    }
+}

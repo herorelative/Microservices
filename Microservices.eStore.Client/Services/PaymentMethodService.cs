@@ -20,7 +20,7 @@ namespace Microservices.eStore.Client.Services
         public async Task<IEnumerable<PaymentMethodVM>> GetAllPaymentMethods()
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<PaymentMethodVM>>(
-                await _httpClient.GetStreamAsync($"api/paymentmethods"),
+                await _httpClient.GetStreamAsync($"https://localhost:44365/api/paymentmethods"),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
     }
