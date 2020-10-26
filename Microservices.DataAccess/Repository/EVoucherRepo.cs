@@ -29,6 +29,7 @@ namespace Microservices.DataAccess.Repository
         {
             if (evoucher == null)
                 throw new ArgumentNullException(nameof(evoucher));
+            evoucher.Id = Guid.NewGuid();
 
             await _applicationDbContext.EVouchers.AddAsync(evoucher);
         }
@@ -43,12 +44,16 @@ namespace Microservices.DataAccess.Repository
 
         public async Task<IEnumerable<EVoucher>> GetAlleVouchers()
         {
-            return await _applicationDbContext.EVouchers.ToListAsync(); 
+            return await _applicationDbContext.EVouchers
+                .Include(e=>e.DicountedPaymentMethod)
+                .ToListAsync(); 
         }
 
         public async Task<EVoucher> GeteVoucherById(Guid Id)
         {
-            return await _applicationDbContext.EVouchers.FirstOrDefaultAsync(e=>e.Id == Id);
+            return await _applicationDbContext.EVouchers
+                .Include(e=>e.DicountedPaymentMethod)
+                .FirstOrDefaultAsync(e=>e.Id == Id);
         }
 
         public async Task<bool> SaveChanges()

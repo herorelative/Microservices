@@ -26,12 +26,16 @@ namespace Microservices.eStore.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProviderService>();
+            var baseAPIurl = "https://localhost:44365";
 
             builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
-                client.BaseAddress = new Uri("https://localhost:44365")
+                client.BaseAddress = new Uri(baseAPIurl)
             );
             builder.Services.AddHttpClient<IPaymentMethodService, PaymentMethodService>(client =>
-                client.BaseAddress = new Uri("https://localhost:44365")
+                client.BaseAddress = new Uri(baseAPIurl)
+            );
+            builder.Services.AddHttpClient<IEVoucherService, EVoucherService>(client =>
+                client.BaseAddress = new Uri(baseAPIurl)
             );
 
             await builder.Build().RunAsync();

@@ -19,6 +19,7 @@ namespace Microservices.Shared.DTOs
         public double Amount { get; set; }
 
         public Guid PaymentMethodId { get; set; }
+        public PaymentMethodVM DicountedPaymentMethod { get; set; }
 
         public int DiscountOnPaymentMethod { get; set; }
 

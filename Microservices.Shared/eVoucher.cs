@@ -29,8 +29,10 @@ namespace Microservices.Shared
         public double Amount { get; set; }
 
         [Required]
+        [ForeignKey(nameof(PaymentMethod))]
         public Guid PaymentMethodId { get; set; }
-        
+        public virtual PaymentMethod DicountedPaymentMethod { get; set; }
+
         [Required]
         public int DiscountOnPaymentMethod { get; set; }
         

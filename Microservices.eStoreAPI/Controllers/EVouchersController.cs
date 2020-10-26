@@ -6,12 +6,14 @@ using AutoMapper;
 using Microservices.DataAccess.Repository.IRepository;
 using Microservices.Shared;
 using Microservices.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.eStoreAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EVouchersController : ControllerBase
@@ -54,7 +56,7 @@ namespace Microservices.eStoreAPI.Controllers
 
             var evoucherVM = _mapper.Map<eVoucherVM>(eVoucherModel);
 
-            return CreatedAtRoute(nameof(GeteVoucherById), new { Id = evoucherVM.Id }, evoucherVM);
+            return Created("evoucher", evoucherVM);
         }
 
         //PUT: api/evouchers/{id}
