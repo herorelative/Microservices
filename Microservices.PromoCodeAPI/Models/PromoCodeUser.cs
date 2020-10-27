@@ -15,5 +15,7 @@ namespace Microservices.PromoCodeAPI.Models
         public string Name { get; set; }
         public int MaxBuyLimit { get; set; } = 1000;
         public int MaxBuyGiftLimit { get; set; } = 10;
+        public string RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using Microservices.PromoCodeAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microservices.PromoCodeAPI.Migrations
 {
     [DbContext(typeof(PromoCodeDbContext))]
-    partial class PromoCodeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201027024058_Refersh-token-added")]
+    partial class Refershtokenadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
