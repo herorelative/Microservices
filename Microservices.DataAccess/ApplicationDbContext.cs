@@ -19,6 +19,13 @@ namespace Microservices.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<EVoucher>()
+               .HasOne(d => d.DicountedPaymentMethod)
+               .WithMany(s => s.EVouchers)
+               .HasForeignKey(d => d.PaymentMethodId)
+               .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<PaymentMethod>().HasData(
                 new PaymentMethod
                 {

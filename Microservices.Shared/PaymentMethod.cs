@@ -15,5 +15,7 @@ namespace Microservices.Shared
         [Required]
         [StringLength(50)]
         public string Description { get; set; }
+
+        public virtual IEnumerable<EVoucher> EVouchers  { get; set; }
     }
 }
