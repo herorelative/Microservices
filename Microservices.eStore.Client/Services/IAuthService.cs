@@ -11,5 +11,6 @@ namespace Microservices.eStore.Client.Services
         Task<LoginResult> Login(LoginVM loginModel);
         Task Logout();
         Task<RegisterResult> Register(UserRegisterVM registerModel);
+        Task<string> RefreshToken();
     }
 }

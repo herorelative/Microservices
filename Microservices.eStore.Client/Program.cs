@@ -33,6 +33,7 @@ namespace Microservices.eStore.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProviderService>();
+            builder.Services.AddScoped<RefreshTokenService>();
 
             await builder.Build().RunAsync();
         }
