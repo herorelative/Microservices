@@ -1,5 +1,4 @@
 @page "/fetchdata"
-@inject IPaymentMethodService PaymentMethods
 
 <h1>Payment Methods</h1>
 
@@ -31,13 +30,4 @@ else
         }
     </tbody>
 </table>
-}
-
-@code {
-    private IEnumerable<PaymentMethodVM> paymentmethods { get; set; } = new List<PaymentMethodVM>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        paymentmethods = (await PaymentMethods.GetAllPaymentMethods()).ToList();
-    }
 }

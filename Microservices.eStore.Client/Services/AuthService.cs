@@ -77,7 +77,7 @@ namespace Microservices.eStore.Client.Services
             var refreshToken = await _localStorage.GetItemAsync<string>("refreshToken");
             var tokenDto = JsonSerializer.Serialize(new RefreshTokenVM { Token = token, RefreshToken = refreshToken });
             var bodyContent = new StringContent(tokenDto, Encoding.UTF8, "application/json");
-            var refreshResult = await _httpClient.PostAsync("https://localhost:5011/api/token/refresh", bodyContent);
+            var refreshResult = await _httpClient.PostAsync("https://localhost:5011/api/tokens/refresh", bodyContent);
             var refreshContent = await refreshResult.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<LoginResult>(refreshContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (!refreshResult.IsSuccessStatusCode)

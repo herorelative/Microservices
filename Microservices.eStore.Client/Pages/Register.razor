@@ -1,6 +1,4 @@
 ﻿@page "/register"
-@inject IAuthService AuthService
-@inject NavigationManager NavigationManager
 
 <h1>Register</h1>
 
@@ -47,27 +45,3 @@
         </EditForm>
     </div>
 </div>
-
-@code {
-
-    private UserRegisterVM RegisterModel = new UserRegisterVM();
-    private bool ShowErrors;
-    private IEnumerable<string> Errors;
-
-    private async Task HandleRegistration()
-    {
-        ShowErrors = false;
-
-        var result = await AuthService.Register(RegisterModel);
-
-        if (result.Success)
-        {
-            NavigationManager.NavigateTo("/login");
-        }
-        else
-        {
-            Errors = result.Errors;
-            ShowErrors = true;
-        }
-    }
-}

@@ -32,7 +32,7 @@ namespace Microservices.eStore.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            //Interceptor.RegisterEvent();
+            Interceptor.RegisterEvent();
             Payments = (await PaymentMethodServ.GetAllPaymentMethods()).ToList();
 
             var modelFromRepo = await EvoucherServ.GetAnEvoucher(id);

@@ -20,11 +20,12 @@ namespace Microservices.eStore.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            //Interceptor.RegisterEvent();
+            Interceptor.RegisterEvent();
             evouchers = (await EVoucherService.GetAllEvouchers()).ToList();
         }
         public void Dispose()
         {
+            //throw new NotImplementedException();
             Interceptor.DisposeEvent();
         }
     }
