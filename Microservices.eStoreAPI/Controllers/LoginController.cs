@@ -48,7 +48,7 @@ namespace Microservices.eStoreAPI.Controllers
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
             user.RefreshToken = GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(2);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_appSettings.JwtExpiryInDays);
 
             await _userManager.UpdateAsync(user);
 
@@ -77,7 +77,7 @@ namespace Microservices.eStoreAPI.Controllers
                 issuer: _appSettings.JwtIssuer,
                 audience: _appSettings.JwtAudience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_appSettings.JwtExpiryInDays),
+                expires: DateTime.UtcNow.AddDays(_appSettings.JwtExpiryInDays),
                 signingCredentials: signingCredentials);
 
             return tokenOptions;

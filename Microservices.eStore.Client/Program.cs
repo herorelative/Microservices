@@ -11,6 +11,7 @@ using Blazored.LocalStorage;
 using Microservices.eStore.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Microservices.eStore.Client
 {
@@ -21,10 +22,12 @@ namespace Microservices.eStore.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            }.EnableIntercept(sp));
 
-            builder.Services.AddScoped(sp => new HttpClient { 
-                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
-            });
+            builder.Services.AddHttpClientInterceptor();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
@@ -34,6 +37,7 @@ namespace Microservices.eStore.Client
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProviderService>();
             builder.Services.AddScoped<RefreshTokenService>();
+            builder.Services.AddScoped<HttpInterceptorService>();
 
             await builder.Build().RunAsync();
         }

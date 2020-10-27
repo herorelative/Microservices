@@ -1,8 +1,5 @@
 ﻿@page "/EditVoucher/{id:guid}"
 @attribute [Authorize]
-@inject IPaymentMethodService PaymentMethodServ
-@inject IEVoucherService EvoucherServ
-@inject NavigationManager NaviManager
 
 <h1>Details for New eVoucher</h1>
 
@@ -69,46 +66,3 @@
         </EditForm>
     </div>
 </div>
-@code {
-    [Parameter]
-    public Guid id { get; set; }
-    public string PaymentMethodId { get; set; }
-
-    private eVoucherUpdateVM voucher = new eVoucherUpdateVM();
-    public IEnumerable<PaymentMethodVM> Payments { get; set; } = new List<PaymentMethodVM>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        Payments = (await PaymentMethodServ.GetAllPaymentMethods()).ToList();
-
-        var modelFromRepo = await EvoucherServ.GetAnEvoucher(id);
-        if(modelFromRepo == null)
-        {
-            //show error message
-        }
-
-        voucher.Title = modelFromRepo.Title;
-        voucher.Description = modelFromRepo.Description;
-        voucher.ExpireDate = modelFromRepo.ExpireDate;
-        voucher.Quantity = modelFromRepo.Quantity;
-        voucher.Amount = modelFromRepo.Amount;
-        PaymentMethodId = modelFromRepo.PaymentMethodId.ToString();
-        voucher.DiscountOnPaymentMethod = modelFromRepo.DiscountOnPaymentMethod;
-        voucher.BuyType = modelFromRepo.BuyType;
-    }
-
-    protected async Task HandleSave()
-    {
-        voucher.PaymentMethodId = Guid.Parse(PaymentMethodId);
-        await EvoucherServ.UpdateAnEvoucher(id,voucher);
-        NaviManager.NavigateTo("/evouchers");
-        //if (addedVoucher != null)
-        //{
-        //    //created
-        //}
-        //else
-        //{
-        //    //something went wrong
-        //}
-    }
-}

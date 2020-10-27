@@ -38,20 +38,17 @@ namespace Microservices.eStore.Client.Services
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtPaser.ParseClaimsFromJwt(savedToken), "jwtAuthType")));
         }
 
-        public void MarkAsAuthenticated(string email)
+        public void MarkAsAuthenticated(string token)
         {
             var authenticatedUser = new ClaimsPrincipal(
-                new ClaimsIdentity(
-                    new Claim[] { 
-                        new Claim(ClaimTypes.Name, email) 
-                    }, "jwtAuthType"));
+                new ClaimsIdentity(JwtPaser.ParseClaimsFromJwt(token), "jwtAuthType"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }
 
         public void MarkAsLoggedOut()
         {
-            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
+            //var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(_anonymous);
             NotifyAuthenticationStateChanged(authState);
         }

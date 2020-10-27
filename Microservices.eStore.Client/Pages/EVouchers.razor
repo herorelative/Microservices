@@ -1,6 +1,5 @@
 @page "/Evouchers"
 @attribute [Authorize]
-@inject IEVoucherService EVoucherService
 
 <h1>eVouchers</h1>
 
@@ -12,78 +11,69 @@
 }
 else
 {
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Exp.</th>
-                <th>Title/Desc</th>
-                <th>Amount</th>
-                <th>Payment/Discount</th>
-                <th>Qty</th>
-                <th>Is Active</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th>Exp.</th>
-                <th>Title/Desc</th>
-                <th>Amount</th>
-                <th>Payment/Discount</th>
-                <th>Qty</th>
-                <th>Is Active</th>
-                <th></th>
-            </tr>
-        </tfoot>
-        <tbody>
-            @foreach (var voucher in evouchers)
-            {
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td align="center">
-                        <strong>@voucher.ExpireDate.ToString("dd/MM/yyyy")</strong><br />
-                        <small>@voucher.BuyType</small>
-                    </td>
-
-                    <td>
-                        <strong>@voucher.Title</strong><br />
-                        <small>@voucher.Description</small>
-                    </td>
-                    <td align="right">
-                        <strong>@voucher.Amount</strong>
-                    </td>
-                    <td align="center">
-                        <strong>@voucher.DicountedPaymentMethod.Description</strong><br />
-                        @voucher.DiscountOnPaymentMethod %
-                    </td>
-                    <td align="right" valign="baseline">@voucher.Quantity</td>
-                    <td align="center">
-                        <a href="NewOrUpdateVoucher/@voucher.Id" class="btn btn-outline-primary btn-sm">
-                            @if (voucher.IsActive)
-                            {
-                                <b>Make Inactive</b>
-                            }
-                            else
-                            {
-                                <b>Make Active</b>
-                            }
-                        </a>
-                    </td>
-                    <td align="center">
-                        <a href="EditVoucher/@voucher.Id" class="btn btn-primary btn-sm">Edit</a>
-                    </td>
+                    <th>Exp.</th>
+                    <th>Title/Desc</th>
+                    <th>Amount</th>
+                    <th>Payment/Discount</th>
+                    <th>Qty</th>
+                    <th>Is Active</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
-}
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Exp.</th>
+                    <th>Title/Desc</th>
+                    <th>Amount</th>
+                    <th>Payment/Discount</th>
+                    <th>Qty</th>
+                    <th>Is Active</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var voucher in evouchers)
+                {
+                    <tr>
+                        <td align="center">
+                            <strong>@voucher.ExpireDate.ToString("dd/MM/yyyy")</strong><br />
+                            <small>@voucher.BuyType</small>
+                        </td>
 
-@code {
-    private IEnumerable<eVoucherVM> evouchers { get; set; } = new List<eVoucherVM>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        evouchers = (await EVoucherService.GetAllEvouchers()).ToList();
-    }
+                        <td>
+                            <strong>@voucher.Title</strong><br />
+                            <small>@voucher.Description</small>
+                        </td>
+                        <td align="right">
+                            <strong>@voucher.Amount</strong>
+                        </td>
+                        <td align="center">
+                            <strong>@voucher.DicountedPaymentMethod.Description</strong><br />
+                            @voucher.DiscountOnPaymentMethod %
+                        </td>
+                        <td align="right" valign="baseline">@voucher.Quantity</td>
+                        <td align="center">
+                            <a href="NewOrUpdateVoucher/@voucher.Id" class="btn btn-outline-primary btn-sm">
+                                @if (voucher.IsActive)
+                                {
+                                    <b>Make Inactive</b>
+                                }
+                                else
+                                {
+                                    <b>Make Active</b>
+                                }
+                            </a>
+                        </td>
+                        <td align="center">
+                            <a href="EditVoucher/@voucher.Id" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
