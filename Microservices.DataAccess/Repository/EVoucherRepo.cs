@@ -64,8 +64,7 @@ namespace Microservices.DataAccess.Repository
         public void UpdateEVoucher(EVoucher evoucher)
         {
             //no need to implement in using entityframework core
-            //but have created to use for other provider
-            throw new NotImplementedException();
+            //but have created to use for other orm
         }
     }
 }

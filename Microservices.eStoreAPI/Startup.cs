@@ -22,6 +22,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microservices.eStoreAPI.Helpers;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Microservices.eStoreAPI
 {
@@ -57,8 +63,6 @@ namespace Microservices.eStoreAPI
                 .AllowAnyMethod());
             });
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,6 +82,8 @@ namespace Microservices.eStoreAPI
                             Encoding.UTF8.GetBytes(appSettings.JwtSecurityKey))
                     };
                 });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             //AddTransient: 
             //a service is created each time it is requested from the service container
@@ -105,6 +111,11 @@ namespace Microservices.eStoreAPI
             app.UseHttpsRedirection();
             app.UseCors("Open");
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"StaticFiles")),
+                 RequestPath = new PathString("/StaticFiles")
+            });
 
             app.UseRouting();
 

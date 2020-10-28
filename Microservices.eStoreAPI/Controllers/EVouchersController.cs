@@ -61,7 +61,7 @@ namespace Microservices.eStoreAPI.Controllers
 
         //PUT: api/evouchers/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEvoucher(Guid id,eVoucherUpdateVM model)
+        public async Task<ActionResult> UpdateEvoucher(Guid id,[FromBody]eVoucherUpdateVM model)
         {
             var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
             
@@ -70,23 +70,27 @@ namespace Microservices.eStoreAPI.Controllers
 
             _mapper.Map(model, evoucherModelFromRepo);
 
-            //the following will not do anything, but it is here to support other ORM
-            //and reduce maintenance work
+            //the following statement will not do anything, 
+            //but it is here to support other ORM
             _eVoucherRepo.UpdateEVoucher(evoucherModelFromRepo);
+
             await _eVoucherRepo.SaveChanges();
             return NoContent();
         }
 
         //PATCH: api/evouchers/{id}
         [HttpPatch("{id}")]
-        public async Task<ActionResult> PartialeVoucherUpdate(Guid id,JsonPatchDocument<eVoucherUpdateVM> patcheVoucher)
+        public async Task<ActionResult> PartialeVoucherUpdate(Guid id)
         {
             var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
             if (evoucherModelFromRepo == null)
                 return NotFound();
 
-            var evoucherToPatch = _mapper.Map<eVoucherUpdateVM>(evoucherModelFromRepo);
-            patcheVoucher.ApplyTo(evoucherToPatch, ModelState);
+            JsonPatchDocument<eVoucherPatchVM> patchDoc = new JsonPatchDocument<eVoucherPatchVM>();
+            patchDoc.Add(e=>e.IsActive, !evoucherModelFromRepo.IsActive);
+
+            var evoucherToPatch = _mapper.Map<eVoucherPatchVM>(evoucherModelFromRepo);
+            patchDoc.ApplyTo(evoucherToPatch, ModelState);
 
             if (!TryValidateModel(evoucherToPatch))
                 return ValidationProblem(ModelState);
@@ -102,7 +106,33 @@ namespace Microservices.eStoreAPI.Controllers
             return NoContent();
         }
 
+        ////PATCH: api/evouchers/{id}
+        //[HttpPatch("{id}")]
+        //public async Task<ActionResult> PartialeVoucherUpdate(Guid id,[FromBody]JsonPatchDocument<eVoucherPatchVM> patcheVoucher)
+        //{
+        //    var evoucherModelFromRepo = await _eVoucherRepo.GeteVoucherById(id);
+        //    if (evoucherModelFromRepo == null)
+        //        return NotFound();
+        //    var evoucherToPatch = _mapper.Map<eVoucherPatchVM>(evoucherModelFromRepo);
+        //    patcheVoucher.ApplyTo(evoucherToPatch, ModelState);
+        //    return Ok(evoucherToPatch);
+
+        //    if (!TryValidateModel(evoucherToPatch))
+        //        return ValidationProblem(ModelState);
+
+        //    _mapper.Map(evoucherToPatch, evoucherModelFromRepo);
+
+        //    //the following will not do anything, but it is here to support other ORM
+        //    //and reduce maintenance work
+        //    //_eVoucherRepo.UpdateEVoucher(evoucherModelFromRepo);
+
+        //    await _eVoucherRepo.SaveChanges();
+
+        //    return NoContent();
+        //}
+
         //DELETE: api/evouchers/{id}
+        
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteEVoucher(Guid id)
         {

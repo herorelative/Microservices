@@ -12,6 +12,7 @@ using Microservices.eStore.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Tewr.Blazor.FileReader;
 
 namespace Microservices.eStore.Client
 {
@@ -38,6 +39,7 @@ namespace Microservices.eStore.Client
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProviderService>();
             builder.Services.AddScoped<RefreshTokenService>();
             builder.Services.AddScoped<HttpInterceptorService>();
+            builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
             await builder.Build().RunAsync();
         }

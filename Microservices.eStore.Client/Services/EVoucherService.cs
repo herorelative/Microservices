@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -24,11 +25,22 @@ namespace Microservices.eStore.Client.Services
             var evoucherJson = new StringContent(
                 JsonSerializer.Serialize(evoucher), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("https://localhost:44365/api/evouchers", evoucherJson);
-            if (response.IsSuccessStatusCode)
+            var content = await response.Content.ReadAsStreamAsync();
+            if (!response.IsSuccessStatusCode)
             {
-                return await JsonSerializer.DeserializeAsync<eVoucherVM>(await response.Content.ReadAsStreamAsync());
+                //show error
             }
-            return null;
+            return await JsonSerializer.DeserializeAsync<eVoucherVM>(content);
+        }
+
+        public async Task DeleteAnEvoucher(Guid Id)
+        {
+            var deleteResult = await _httpClient.DeleteAsync($"https://localhost:44365/api/evouchers/{Id}");
+            var deleteContent = await deleteResult.Content.ReadAsStringAsync();
+            if (!deleteResult.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(deleteContent);
+            }
         }
 
         public async Task<IEnumerable<eVoucherVM>> GetAllEvouchers()
@@ -40,8 +52,14 @@ namespace Microservices.eStore.Client.Services
 
         public async Task<eVoucherVM> GetAnEvoucher(Guid Id)
         {
-            return await JsonSerializer.DeserializeAsync<eVoucherVM>(
-                await _httpClient.GetStreamAsync($"https://localhost:44365/api/evouchers/{Id}"),
+            var response = await _httpClient.GetAsync($"https://localhost:44365/api/evouchers/{Id}");
+            var content = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(content);
+            }
+
+            return JsonSerializer.Deserialize<eVoucherVM>(content,
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
@@ -49,7 +67,41 @@ namespace Microservices.eStore.Client.Services
         {
             var evoucherJson = new StringContent(
                 JsonSerializer.Serialize(evoucher), Encoding.UTF8, "application/json");
-            await _httpClient.PutAsync($"https://localhost:44365/api/evouchers/{Id}", evoucherJson);
+            var putResult = await _httpClient.PutAsync($"https://localhost:44365/api/evouchers/{Id}", evoucherJson);
+            var putContent = await putResult.Content.ReadAsStringAsync();
+
+            if (!putResult.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(putContent);
+            }
+        }
+
+        public async Task ChangeActiveStatusEvoucher(Guid Id)
+        {
+            var patchResult = await _httpClient.PatchAsync($"https://localhost:44365/api/evouchers/{Id}",null);
+            var patchContent = await patchResult.Content.ReadAsStringAsync();
+
+            if (!patchResult.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(patchContent);
+            }
+        }
+
+        public async Task<string> UploadEvoucherImage(MultipartFormDataContent content)
+        {
+            var postResult= await _httpClient.PostAsync("https://localhost:44365/api/uploads", content);
+
+            var postContent = await postResult.Content.ReadAsStringAsync();
+
+            if (!postResult.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(postContent);
+            }
+            else
+            {
+                var ImageUrl = Path.Combine("https://localhost:44365/", postContent);
+                return ImageUrl;
+            }
         }
     }
 }

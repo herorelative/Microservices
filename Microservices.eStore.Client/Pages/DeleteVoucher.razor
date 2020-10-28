@@ -1,0 +1,7 @@
+﻿@page "/deletevoucher/{id:guid}"
+@attribute [Authorize]
+<h1>Delete Confirmation?</h1>
+<p>Are you sure to delete @ModelFromRepo.Title ?</p>
+<div>
+    <button class="btn btn-danger" @onclick="HandleDelete">Yes, please.</button>
+</div>

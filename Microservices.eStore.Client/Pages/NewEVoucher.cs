@@ -49,6 +49,12 @@ namespace Microservices.eStore.Client.Pages
                 //something went wrong
             }
         }
+
+        private void UploadedImageUrl(string ImageUrl)
+        {
+            voucher.Image = ImageUrl;
+        }
+
         public void Dispose()
         {
             Interceptor.DisposeEvent();

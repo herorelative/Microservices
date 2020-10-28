@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Microservices.DataAccess\Microservices.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="StaticFiles\Images\" />
+  </ItemGroup>
+
 </Project>

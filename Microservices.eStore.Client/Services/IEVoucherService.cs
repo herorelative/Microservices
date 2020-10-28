@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Microservices.eStore.Client.Services
@@ -12,5 +13,8 @@ namespace Microservices.eStore.Client.Services
         Task<eVoucherVM> GetAnEvoucher(Guid Id);
         Task<eVoucherVM> AddEvoucher(eVoucherCreateVM evoucher);
         Task UpdateAnEvoucher(Guid Id, eVoucherUpdateVM evoucher);
+        Task ChangeActiveStatusEvoucher(Guid Id);
+        Task DeleteAnEvoucher(Guid Id);
+        Task<string> UploadEvoucherImage(MultipartFormDataContent content);
     }
 }

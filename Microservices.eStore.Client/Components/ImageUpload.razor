@@ -1,0 +1,7 @@
+﻿<input type="file" @ref="_input" @onchange="HandleChanged" accept=".jpg, .jpeg, .png" />
+@if (ImageUrl != null)
+{
+    <div>
+        <img src="@ImageUrl" class="img-thumbnail" style="width:250px" />
+    </div>
+}
