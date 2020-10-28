@@ -35,7 +35,7 @@ namespace Microservices.eStoreAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<eVoucherVM>>(eVouchers));
         }
         // GET: api/evouchers/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GeteVoucherById")]
         //[Authorize]
         public async Task<ActionResult<eVoucherVM>> GeteVoucherById(Guid Id)
         {
@@ -56,7 +56,7 @@ namespace Microservices.eStoreAPI.Controllers
 
             var evoucherVM = _mapper.Map<eVoucherVM>(eVoucherModel);
 
-            return Created("evoucher", evoucherVM);
+            return CreatedAtRoute(nameof(GeteVoucherById),new { Id = evoucherVM.Id} ,evoucherVM);
         }
 
         //PUT: api/evouchers/{id}

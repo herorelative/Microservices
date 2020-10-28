@@ -30,8 +30,9 @@ namespace Microservices.eStoreAPI.Controllers
             _appsettings = _configuration.GetSection("AppSettings");
         }
 
-        [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenVM tokenDto)
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> Refresh(RefreshTokenVM tokenDto)
         {
             if (tokenDto is null)
             {
@@ -40,7 +41,7 @@ namespace Microservices.eStoreAPI.Controllers
             var principal = GetPrincipalFromExpiredToken(tokenDto.Token);
             var username = principal.Identity.Name;
             var user = await _userManager.FindByEmailAsync(username);
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
                 return BadRequest(new LoginResult { Success = false, Error = "Invalid client request" });
             var signingCredentials = GetSigningCredentials();
             var claims = GetClaims(user);
@@ -72,7 +73,7 @@ namespace Microservices.eStoreAPI.Controllers
                 issuer: _appsettings.GetSection("JwtIssuer").Value,
                 audience: _appsettings.GetSection("JwtAudience").Value,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_appsettings.GetSection("JwtExpiryInMinutes").Value)),
+                expires: DateTime.UtcNow.AddDays(Convert.ToDouble(_appsettings.GetSection("JwtExpiryInDays").Value)),
                 signingCredentials: signingCredentials);
 
             return tokenOptions;
